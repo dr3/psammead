@@ -7,11 +7,19 @@ import Timestamp from '@bbc/psammead-timestamp';
 import MediaIndicator from '@bbc/psammead-media-indicator';
 import notes from '../README.md';
 import StoryPromo, { Headline, Summary, Link } from './index';
+import Live from './Live';
 
 // eslint-disable-next-line react/prop-types
-const InfoComponent = ({ headlineText, summaryText, script, topStory }) => (
+const InfoComponent = ({
+  headlineText,
+  summaryText,
+  script,
+  topStory,
+  dir,
+}) => (
   <Fragment>
     <Headline script={script} topStory={topStory}>
+      <Live script={script} liveText={text('Live text', 'LIVE')} topStory={topStory} dir={dir} />{' '}
       <Link href="https://www.bbc.co.uk/news">{headlineText}</Link>
     </Headline>
     <Summary script={script} topStory={topStory}>
@@ -49,13 +57,14 @@ const MediaIndicatorComponent = (
 const generateStory = ({ mediaIndicator, topStory }) =>
   inputProvider(
     [{ name: 'Headline' }, { name: 'Summary' }],
-    ([headlineText, summaryText], script) => {
+    ({ slotTexts: [headlineText, summaryText], script, dir }) => {
       const Info = (
         <InfoComponent
           headlineText={headlineText}
           summaryText={summaryText}
           script={script}
           topStory={topStory}
+          dir={dir}
         />
       );
 
@@ -70,7 +79,7 @@ const generateStory = ({ mediaIndicator, topStory }) =>
     },
   );
 
-storiesOf('Components|StoryPromo/StoryPromo', module)
+storiesOf('StoryPromo', module)
   .addDecorator(withKnobs)
   .add('default', generateStory({}), { notes, knobs: { escapeHTML: false } })
   .add('with media indicator', generateStory({ mediaIndicator: true }), {
